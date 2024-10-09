@@ -35,42 +35,37 @@ class MainActivity : AppCompatActivity() {
         val mainLayout = findViewById<ConstraintLayout>(R.id.main)
         mainLayout.setBackgroundResource(R.drawable.fondo23) // Reemplaza con tu imagen
 
-
-        // Configura los márgenes del layout para edge-to-edge
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        // Inicializa las vistas
         btnRecognizeColor = findViewById(R.id.btnRecognizeColor)
         txtRecognizedColor = findViewById(R.id.txtRecognizedColor)
         colorView = findViewById(R.id.colorView)
         btnExit = findViewById(R.id.btnExit)
-        // Configura el botón para iniciar el reconocimiento de voz
+
         btnRecognizeColor.setOnClickListener {
             checkPermissionsAndStartRecognition()
         }
-        // Configura el botón de salir para cerrar la aplicación
+
         btnExit.setOnClickListener {
-            finish() // Cierra la actividad actual, que efectivamente cierra la aplicación
+            finish()
         }
     }
 
-    // Función para verificar permisos y luego iniciar el reconocimiento de voz
     private fun checkPermissionsAndStartRecognition() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
             != PackageManager.PERMISSION_GRANTED) {
             // Solicita el permiso si no se ha concedido
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.RECORD_AUDIO), 200)
         } else {
-            // Inicia el reconocimiento de voz si se tiene permiso
+
             startVoiceRecognition()
         }
     }
 
-    // Inicia el reconocimiento de voz
     private fun startVoiceRecognition() {
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
@@ -83,7 +78,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Procesa el resultado del reconocimiento de voz
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 100 && resultCode == RESULT_OK) {
@@ -95,7 +89,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-    // Función para identificar el color y cambiar la vista
     private fun identifyColor(colorName: String) {
         val color = when (colorName) {
             // Colores básicos
@@ -105,38 +98,32 @@ class MainActivity : AppCompatActivity() {
             "amarillo" -> android.R.color.holo_orange_light
             "negro" -> android.R.color.black
             "blanco" -> android.R.color.white
-            // Colores adicionales
             "naranja" -> android.R.color.holo_orange_dark
             "morado" -> android.R.color.holo_purple
             "rosado" -> android.R.color.holo_red_light
             "gris" -> android.R.color.darker_gray
             "gris claro" -> android.R.color.primary_text_light
             "gris oscuro" -> android.R.color.background_dark
-            // Colores secundarios
             "violeta" -> android.R.color.holo_purple
             "celeste" -> android.R.color.holo_blue_bright
             "café" -> android.R.color.holo_red_light
             "beige" -> android.R.color.holo_orange_light
-            // Variaciones de verde y azul
             "verde claro" -> android.R.color.holo_green_light
             "verde oscuro" -> android.R.color.holo_green_dark
             "azul claro" -> android.R.color.holo_blue_light
             "azul oscuro" -> android.R.color.holo_blue_bright
-            // Variaciones de rojo y otros colores cálidos
             "rojo claro" -> android.R.color.holo_red_light
             "rojo oscuro" -> android.R.color.holo_red_dark
             "rosa" -> android.R.color.holo_red_light
 
-            else -> null // Si el color no es reconocible
+            else -> null
         }
 
-        // Si el color es nulo, significa que no fue reconocido
         if (color == null) {
             colorView.setBackgroundColor(ContextCompat.getColor(this, android.R.color.darker_gray))
             txtRecognizedColor.text = "Color no reconocible: $colorName"
             Toast.makeText(this, "Color no reconocible o no existe: $colorName", Toast.LENGTH_SHORT).show()
         } else {
-            // Si el color fue reconocido, actualiza la vista
             colorView.setBackgroundColor(ContextCompat.getColor(this, color))
             txtRecognizedColor.text = "Color reconocido: $colorName"
         }
